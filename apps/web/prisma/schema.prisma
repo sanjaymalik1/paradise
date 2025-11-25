@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+}
+
+model Hotel{
+  id String @id @default(uuid())
+  name String
+  city String
+  address String
+  category String?
+  description String?
+  images String[]
+  tags String[]
+  createdAt DateTime @default(now())
+
+  roomTypes RoomType[]
+}
+
+model RoomType {
+  id          String   @id @default(uuid())
+  hotelId     String
+  name        String
+  description String?
+  price       Int
+  maxGuests   Int
+  images      String[]
+  roomSize    Int?         // room size in sq ft 
+  amenities String[]
+
+  hotel       Hotel     @relation(fields: [hotelId], references: [id])
+  inventory   Inventory[]
+}
+
+model Inventory {
+  id          String      @id @default(uuid())
+  roomTypeId  String
+  date        DateTime
+  available   Int
+
+  roomType    RoomType    @relation(fields: [roomTypeId], references: [id])
+
+  @@unique([roomTypeId, date]) // Important: only one record per date (primary key)
+}
