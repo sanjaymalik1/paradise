@@ -13,6 +13,7 @@ model User {
   password  String
   name      String?
   createdAt DateTime @default(now())
+  bookings  Booking[]
 }
 
 model Hotel{
@@ -27,6 +28,7 @@ model Hotel{
   createdAt DateTime @default(now())
 
   roomTypes RoomType[]
+  bookings  Booking[]
 }
 
 model RoomType {
@@ -42,6 +44,7 @@ model RoomType {
 
   hotel       Hotel     @relation(fields: [hotelId], references: [id])
   inventory   Inventory[]
+  bookings  Booking[]
 }
 
 model Inventory {
@@ -54,3 +57,29 @@ model Inventory {
 
   @@unique([roomTypeId, date]) // Important: only one record per date (primary key)
 }
+
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+
+model Booking {
+  id         String         @id @default(uuid())
+  userId     String
+  hotelId    String
+  roomTypeId String
+  checkIn    DateTime
+  checkOut   DateTime
+  totalPrice Int
+  status     BookingStatus  @default(PENDING)
+  createdAt  DateTime       @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
+  hotel     Hotel     @relation(fields: [hotelId], references: [id])
+  roomType  RoomType  @relation(fields: [roomTypeId], references: [id])
+}
+
+

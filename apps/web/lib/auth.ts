@@ -6,5 +6,6 @@ export function verifyToken(token : string){
         return {valid : true, decoded};
     }catch(error){
         return {valid : false, decoded : null};
+        
     }
 }
