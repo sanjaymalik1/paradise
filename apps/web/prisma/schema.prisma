@@ -8,56 +8,65 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
+  id        String    @id @default(uuid())
+  email     String    @unique
   password  String
   name      String?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
   bookings  Booking[]
 }
 
-model Hotel{
-  id String @id @default(uuid())
-  name String
-  city String
-  address String
-  category String?
-  description String?
-  images String[]
-  tags String[]
-  createdAt DateTime @default(now())
-
-  roomTypes RoomType[]
-  bookings  Booking[]
-}
-
-model RoomType {
+model Hotel {
   id          String   @id @default(uuid())
-  hotelId     String
   name        String
+  city        String
+  address     String
+  category    String?
   description String?
-  price       Int
-  maxGuests   Int
   images      String[]
-  roomSize    Int?         // room size in sq ft 
-  amenities String[]
+  tags        String[]
 
-  hotel       Hotel     @relation(fields: [hotelId], references: [id])
-  inventory   Inventory[]
+  price           Int
+  discountedPrice Int?
+  maxGuests       Int
+  roomSize        Int?
+  amenities       String[]
+
+  ratingCount Int   @default(0) // total number of reviews
+  ratingStar  Float @default(0.0) // average rating 1–5
+
+  createdAt DateTime @default(now())
+
+  inventory Inventory[]
   bookings  Booking[]
 }
+
+// model RoomType {
+//   id          String   @id @default(uuid())
+//   hotelId     String
+//   name        String
+//   description String?
+//   price       Int
+//   maxGuests   Int
+//   images      String[]
+//   roomSize    Int?         // room size in sq ft 
+//   amenities String[]
+
+//   hotel       Hotel     @relation(fields: [hotelId], references: [id])
+//   inventory   Inventory[]
+//   bookings  Booking[]
+// }
 
 model Inventory {
-  id          String      @id @default(uuid())
-  roomTypeId  String
-  date        DateTime
-  available   Int
+  id        String   @id @default(uuid())
+  hotelId   String
+  date      DateTime
+  available Int
 
-  roomType    RoomType    @relation(fields: [roomTypeId], references: [id])
+  hotel Hotel @relation(fields: [hotelId], references: [id])
 
-  @@unique([roomTypeId, date]) // Important: only one record per date (primary key)
+  @@unique([hotelId, date]) // Important: only one record per date (primary key)
 }
-
 
 enum BookingStatus {
   PENDING
@@ -65,21 +74,16 @@ enum BookingStatus {
   CANCELLED
 }
 
-
 model Booking {
-  id         String         @id @default(uuid())
+  id         String        @id @default(uuid())
   userId     String
   hotelId    String
-  roomTypeId String
   checkIn    DateTime
   checkOut   DateTime
   totalPrice Int
-  status     BookingStatus  @default(PENDING)
-  createdAt  DateTime       @default(now())
+  status     BookingStatus @default(PENDING)
+  createdAt  DateTime      @default(now())
 
-  user      User      @relation(fields: [userId], references: [id])
-  hotel     Hotel     @relation(fields: [hotelId], references: [id])
-  roomType  RoomType  @relation(fields: [roomTypeId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+  hotel Hotel @relation(fields: [hotelId], references: [id])
 }
-
-

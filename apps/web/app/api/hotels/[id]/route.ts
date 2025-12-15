@@ -16,8 +16,7 @@ export async function GET(
     }
 
     const hotel = await prisma.hotel.findUnique({
-      where: { id },
-      include: { roomTypes: true }
+      where: { id }
     });
 
     if (!hotel) {
