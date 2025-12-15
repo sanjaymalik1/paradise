@@ -37,7 +37,7 @@ const ContinueSearch = () => {
 // Main HeroSection Component
 export default function HeroSection() {
   return (
-    <section className="relative bg-gradient-to-br from-gray-500 via-gray-600 to-gray-500 py-10 xl:py-16">
+    <section className="relative bg-linear-to-br from-gray-500 via-gray-600 to-gray-500 py-10 xl:py-16">
       {/* Background overlay */}
       {/* <div className="absolute inset-0 bg-black/20"></div> */}
 
