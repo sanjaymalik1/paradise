@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { Separator } from './ui/separator'
 import { Slider } from './ui/slider';
-import { DEFAULT_FILTERS } from '@/app/search/page';
+import { DEFAULT_FILTERS } from '@/app/search/SearchClient';
 
 const hotelCategories = [
   {
@@ -80,7 +80,7 @@ export default function Filters({ filters, setFilters }: FiltersProps) {
     localStorage.removeItem("hotelFilters")
   }
 
-  const isAnyFilterActive = filters.price.min !== 0 || filters.price.max !== 3000 || filters.categories.length > 0 || filters.facilities.length > 0
+  const isAnyFilterActive = filters.price.min !== 0 || filters.price.max !== 4000 || filters.categories.length > 0 || filters.facilities.length > 0
 
   useEffect(()=>{
     localStorage.setItem("hotelFilters",JSON.stringify(filters))
@@ -106,7 +106,7 @@ export default function Filters({ filters, setFilters }: FiltersProps) {
               price: { min, max }
             }))}
             min={0}
-            max={3000}
+            max={4000}
             aria-label="Price range slider"
             className='cursor-pointer'
             showTooltip

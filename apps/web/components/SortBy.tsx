@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { SortOption } from "@/app/search/page"
+import { SortOption } from "@/app/search/SearchClient"
 import { useEffect } from 'react';
 
 export default function SortBy({ sortBy, setSortBy }: { sortBy: SortOption, setSortBy: React.Dispatch<React.SetStateAction<SortOption>> }) {

@@ -56,11 +56,11 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
         <div className='mt-auto flex items-end'>
           <div className=''>
             <div className='flex gap-2 items-center'>
-              <span className='font-bold text-xl xl:text-2xl'>Rs{hotel.discountedPrice}</span>
+              <span className='font-bold text-xl xl:text-2xl'>Rs{hotel.discountedPrice ? hotel.discountedPrice : hotel.price}</span>
               <del className="text-gray-600"><span className='text-gray-600 text-sm xl:text-base'>Rs{hotel.price}</span></del>
-              <span className='text-xs xl:text-sm text-orange-400'>{Math.round((hotel.price - hotel.discountedPrice) / hotel.price * 100)}% off</span>
+              <span className='text-xs xl:text-sm text-orange-400'>{hotel.discountedPrice ? Math.round((hotel.price - hotel.discountedPrice) / hotel.price * 100) : 0}% off</span>
             </div>
-            <p className='text-xs tracking-tighter xl:tracking-normal text-gray-500'>+ Rs{Math.round(0.08 * hotel.discountedPrice)} taxes & fees <span className='relative bottom-0.5'>.</span> per room per night</p>
+            <p className='text-xs tracking-tighter xl:tracking-normal text-gray-500'>+ Rs{hotel.discountedPrice ? Math.round(0.08 * hotel.discountedPrice) : Math.round(0.08 * hotel.price)} taxes & fees <span className='relative bottom-0.5'>.</span> per room per night</p>
           </div>
 
           <div className='ml-auto flex'>
