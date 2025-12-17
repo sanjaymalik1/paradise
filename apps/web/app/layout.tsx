@@ -18,9 +18,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "OYO: India's Best Hotel Booking Site For Sanitized Stay",
-  description: "Book hotels with OYO and get the best deals on 174,000+ hotels and homes across 35+ countries. Enjoy free cancellation and pay at hotel options!",
-  keywords: "OYO, hotels, booking, accommodation, travel, India hotels, budget hotels",
+  title: "PARADISE: India's Best Hotel Booking Site For Sanitized Stay",
+  description: "Book hotels with PARADISE and get the best deals on 174,000+ hotels and homes across 35+ countries. Enjoy free cancellation and pay at hotel options!",
+  keywords: "PARADISE, hotels, booking, accommodation, travel, India hotels, budget hotels",
 };
 
 export default function RootLayout({

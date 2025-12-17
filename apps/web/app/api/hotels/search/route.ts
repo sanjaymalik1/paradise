@@ -225,6 +225,8 @@
 import prisma from "@/services/prisma";
 import { NextResponse } from "next/server";
 
+export const dynamic= "force-dynamic"
+
 // Parse both ISO `2025-11-29T...` and `YYYY-MM-DD`
 function parseDate(d: string): Date | null {
   try {
