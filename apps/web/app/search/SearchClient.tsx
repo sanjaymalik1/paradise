@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Hotel } from "@prisma/client";
 import Filters from "@/components/Filters";
 import SortBy from "@/components/SortBy";
+import Link from "next/link";
 
 export const DEFAULT_FILTERS = {
   price: {
@@ -53,10 +54,10 @@ export default function SearchClient() {
     async function fetchHotels() {
       setLoading(true);
 
-      // const res = await fetch(
-      //   `/api/hotels/search?city=${city}&start=${start}&end=${end}`
-      // );
-      const res = await fetch("/api/hotels")
+      const res = await fetch(
+        `/api/hotels/search?city=${city}&start=${start}&end=${end}&rooms=${rooms || 1}&guests=${guests || 1}`
+      );
+      // const res = await fetch("/api/hotels")
       const data = await res.json();
       if (data.success) {
         setHotels(data.hotels);
@@ -66,7 +67,7 @@ export default function SearchClient() {
     }
 
     fetchHotels();
-  }, [city, start, end]);
+  }, [city, start, end, rooms, guests]);
 
   const filteredHotels = useMemo(() => {
     return hotels.filter((hotel: Hotel) => {
@@ -121,10 +122,12 @@ export default function SearchClient() {
           <Separator className="mb-8 xl:mb-10" />
           <div className="w-full flex flex-col gap-8 xl:gap-10">
             {
-              sortedHotels.map((hotel: Hotel) => {
+              sortedHotels.map((hotel: Hotel, index: number) => {
                 return (
                   <div key={hotel.id}>
-                    <HotelCard hotel={hotel} />
+                    <Link href={`/hotels/${hotel.id}`}>
+                      <HotelCard hotel={hotel} priority={index === 0} />  
+                    </Link>
                     <Separator className="mt-8 xl:mt-10" />
                   </div>
                 )

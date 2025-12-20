@@ -12,19 +12,20 @@ import { useRouter } from "next/navigation";
 
 export default function Searchbar() {
     const [city, setCity] = useState("");
-    const [start, setStart] = useState<Date | undefined>();
-    const [end, setEnd] = useState<Date | undefined>();
+    const [start, setStart] = useState<Date | undefined>(new Date());
+    const [end, setEnd] = useState<Date | undefined>(addDays(new Date(), 1));
     const [rooms, setRooms] = useState("1");
     const [guests, setGuests] = useState("1");
     const [isCheckInOpen, setIsCheckInOpen] = useState(false);
     const [isCheckOutOpen, setIsCheckOutOpen] = useState(false);
+    const [isGuestsOpen, setIsGuestsOpen] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
 
     const router = useRouter();
 
     const handleSearch = () => {
         // TODO: Implement search functionality
-        console.log({ location, start, end, rooms, guests });
+        // console.log("Searchbar state:", { city, start, end, rooms, guests, roomsType: typeof rooms, guestsType: typeof guests });
         if (!city.trim()) {
             setShowAlert(true);
             return;
@@ -34,20 +35,20 @@ export default function Searchbar() {
 
         const query = new URLSearchParams({
             city,
-            start: start?.toISOString() || '',
-            end: end?.toISOString() || '',
+            start: start ? format(start, 'yyyy-MM-dd') : '',
+            end: end ? format(end, 'yyyy-MM-dd') : '',
             rooms: rooms.toString(),
             guests: guests.toString()
         })
 
-        console.log("query from searchbar:  ",query);
+        console.log("Query string:", query.toString());
         
 
         router.push(`/search?${query.toString()}`);
     };
 
     return (
-        <div className="bg-white h-full w-full rounded-sm max-w-6xl flex">
+        <div className="bg-white h-full w-full rounded-sm max-w-6xl flex relative z-20">
 
             {/* Location Input */}
 
@@ -82,17 +83,21 @@ export default function Searchbar() {
 
             {/* Date Pickers */}
             <div className="w-[15%] h-full">
-                <Popover open={isCheckInOpen} onOpenChange={setIsCheckInOpen}>
+                <Popover open={isCheckInOpen} onOpenChange={(open) => {
+                    console.log('Check-in popover state:', open);
+                    setIsCheckInOpen(open);
+                }}>
                     <PopoverTrigger asChild>
-                        <Button
-                            variant="outline"
-                            className="w-full h-full rounded-none text-xs xl:text-sm justify-center font-normal"
+                        <button
+                            type="button"
+                            className="w-full h-full rounded-none text-xs xl:text-sm justify-center font-normal inline-flex items-center gap-2 border border-gray-200 bg-white hover:bg-gray-50"
+                            onClick={() => console.log('Check-in button clicked')}
                         >
                             <CalendarIcon className="hidden xl:block h-4 w-4" />
                             {start ? format(start, "EEE, dd MMM") : format(new Date(), "EEE, dd MMM")}
-                        </Button>
+                        </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
+                    <PopoverContent className="w-auto p-0 z-[100]" align="start" sideOffset={5}>
                         <Calendar
                             mode="single"
                             selected={start}
@@ -100,7 +105,6 @@ export default function Searchbar() {
                                 setStart(date);
                                 setIsCheckInOpen(false);
                             }}
-                            initialFocus
                             disabled={(date) => {
                                 const today = new Date();
                                 today.setHours(0, 0, 0, 0);
@@ -114,15 +118,15 @@ export default function Searchbar() {
             <div className="w-[15%] h-full">
                 <Popover open={isCheckOutOpen} onOpenChange={setIsCheckOutOpen}>
                     <PopoverTrigger asChild>
-                        <Button
-                            variant="outline"
-                            className="w-full h-full rounded-none text-xs xl:text-sm justify-center font-normal"
+                        <button
+                            type="button"
+                            className="w-full h-full rounded-none text-xs xl:text-sm justify-center font-normal inline-flex items-center gap-2 border border-gray-200 bg-white hover:bg-gray-50"
                         >
                             <CalendarIcon className="hidden xl:block h-4 w-4" />
                             {end ? format(end, "EEE, dd MMM") : format(addDays(new Date(), 1), "EEE, dd MMM")}
-                        </Button>
+                        </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
+                    <PopoverContent className="w-auto p-0 z-[100]" align="start" sideOffset={5}>
                         <Calendar
                             mode="single"
                             selected={end}
@@ -130,7 +134,6 @@ export default function Searchbar() {
                                 setEnd(date);
                                 setIsCheckOutOpen(false);
                             }}
-                            initialFocus
                             disabled={(date) => {
                                 const today = new Date();
                                 today.setHours(0, 0, 0, 0);
@@ -145,28 +148,27 @@ export default function Searchbar() {
 
             {/* Guests & Rooms */}
             <div className="w-[15%] h-full">
-                <Popover>
+                <Popover open={isGuestsOpen} onOpenChange={setIsGuestsOpen}>
                     <PopoverTrigger asChild>
-                        <Button
-                            variant="outline"
-                            className="w-full h-full rounded-none text-xs xl:text-sm tracking-tight justify-center font-normal"
+                        <button
+                            type="button"
+                            className="w-full h-full rounded-none text-xs xl:text-sm tracking-tight justify-center font-normal inline-flex items-center gap-2 border border-gray-200 bg-white hover:bg-gray-50"
                         >
                             <Users className=" hidden h-1 w-1 xl:block xl:h-4 xl:w-4" />
                             {rooms} Room, {guests} Guest
-                        </Button>
+                        </button>
                     </PopoverTrigger>
-                    <PopoverContent className=" w-42 text-xs xl:text-base xl:w-52" align="start">
-                        <div className="space-y-1">
+                    <PopoverContent className="w-42 text-xs xl:text-base xl:w-52 z-[100]" align="start" sideOffset={5}>
+                        <div className="space-y-4">
                             <div className="text-xs xl:text-sm flex items-center justify-between">
-                                <span className=" font-medium">Rooms</span>
+                                <span className="font-medium">Rooms</span>
                                 <Select value={rooms} onValueChange={setRooms}>
-                                    <SelectTrigger className="w-14">
-                                        <SelectValue className=""/>
+                                    <SelectTrigger className="w-16">
+                                        <SelectValue />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                        {[1, 2,3,4,5].map((num) => (
-                                            <SelectItem key={num} value={num.toString()}
-                                            className="">
+                                    <SelectContent className="z-[110]">
+                                        {[1, 2, 3, 4, 5].map((num) => (
+                                            <SelectItem key={num} value={num.toString()}>
                                                 {num}
                                             </SelectItem>
                                         ))}
@@ -176,11 +178,11 @@ export default function Searchbar() {
                             <div className="flex items-center justify-between">
                                 <span className="text-xs xl:text-sm font-medium">Guests</span>
                                 <Select value={guests} onValueChange={setGuests}>
-                                    <SelectTrigger className="w-14">
+                                    <SelectTrigger className="w-16">
                                         <SelectValue />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                        {[1, 2].map((num) => (
+                                    <SelectContent className="z-[110]">
+                                        {[1, 2, 3, 4, 5, 6].map((num) => (
                                             <SelectItem key={num} value={num.toString()}>
                                                 {num}
                                             </SelectItem>

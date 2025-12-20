@@ -8,6 +8,7 @@ export default function PromoBanner() {
         alt="Promo 1"
         width={1280}
         height={520}
+        priority={false}
       />
       
       <Image
@@ -15,6 +16,7 @@ export default function PromoBanner() {
         alt="Promo 2"
         width={1280}
         height={520}
+        priority={false}
       />
     </section>
   );

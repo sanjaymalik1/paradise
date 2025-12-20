@@ -11,7 +11,7 @@ function getTodayUTC() {
   ));
 }
 
-export async function POST() {
+export async function GET() {
   try {
     const today = getTodayUTC();
 

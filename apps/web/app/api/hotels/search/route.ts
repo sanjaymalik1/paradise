@@ -269,6 +269,8 @@ export async function GET(req: Request) {
     const rooms = Number(searchParams.get("rooms") || 1);
     const guests = Number(searchParams.get("guests") || 1);
 
+    console.log("Search params:", { city, startParam, endParam, rooms, guests, roomsType: typeof rooms, guestsType: typeof guests });
+
     // Basic validation
     if (!city || !startParam || !endParam) {
       return NextResponse.json(
@@ -327,11 +329,17 @@ export async function GET(req: Request) {
       include: { inventory: true },
     });
 
+    console.log(`Found ${hotels.length} hotels in ${city}`);
+    
     const results: any[] = [];
 
     for (const hotel of hotels) {
+      console.log(`\nChecking hotel: ${hotel.name}, inventory count: ${hotel.inventory.length}`);
       // Check guest capacity
-      if (guests > hotel.maxGuests) continue;
+      if (guests > hotel.maxGuests) {
+        console.log(`Hotel ${hotel.name} skipped: maxGuests ${hotel.maxGuests} < requested ${guests}`);
+        continue;
+      }
 
       let hotelIsAvailable = true;
       let minAvailable = Infinity;
@@ -346,7 +354,16 @@ export async function GET(req: Request) {
           );
         });
 
-        if (!inv || inv.available < rooms) {
+        if (!inv) {
+          console.log(`Hotel ${hotel.name}: No inventory for date ${night.toISOString().split('T')[0]}`);
+          hotelIsAvailable = false;
+          break;
+        }
+
+        console.log(`Hotel ${hotel.name} on ${night.toISOString().split('T')[0]}: inv.available=${inv.available} (type: ${typeof inv.available}), rooms=${rooms} (type: ${typeof rooms}), comparison: ${inv.available} < ${rooms} = ${inv.available < rooms}`);
+
+        if (inv.available < rooms) {
+          console.log(`Hotel ${hotel.name}: Only ${inv.available} rooms available on ${night.toISOString().split('T')[0]}, but ${rooms} requested`);
           hotelIsAvailable = false;
           break;
         }
@@ -355,6 +372,7 @@ export async function GET(req: Request) {
       }
 
       if (hotelIsAvailable) {
+        console.log(`Hotel ${hotel.name}: Available with ${minAvailable} rooms`);
         results.push({
           id: hotel.id,
           name: hotel.name,

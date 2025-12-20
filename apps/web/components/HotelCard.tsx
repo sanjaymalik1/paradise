@@ -13,7 +13,7 @@ function ratingComment(ratingStar: number) {
   return "Good"
 }
 
-export default function HotelCard({ hotel }: { hotel: Hotel }) {
+export default function HotelCard({ hotel, priority = false }: { hotel: Hotel; priority?: boolean }) {
   return (
     <div className='w-full h-52 flex gap-3 xl:gap-4
     xl:h-62'>
@@ -21,7 +21,8 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
       xl:w-md'>
         <Image src={hotel.images[1]} alt='hotel photo' className='object-cover h-full w-full'
           width={1000}
-          height={1000}></Image>
+          height={1000}
+          priority={priority}></Image>
         <div className='absolute top-2 left-2 px-2 py-1 bg-white rounded font-semibold tracking-tighter text-xs flex items-center justify-center
         xl:font-bold xl:tracking-normal'>{hotel.category}</div>
       </div>
@@ -39,6 +40,7 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
             <div className='text-xs text-gray-600 font-medium'>({hotel.ratingCount} Ratings)</div><span className='relative bottom-1'>.</span>
             <div className='text-xs text-gray-600 font-medium'>{ratingComment(hotel.ratingStar)}</div>
           </div>
+          
           <div className='flex gap-3 text-sm mt-1 xl:gap-5 xl:text-lg'>
             {
               hotel.amenities.slice(0, 3).map((amenity, index) => {

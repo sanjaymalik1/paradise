@@ -20,6 +20,7 @@ export default function GlobalPresence() {
                     alt="Promo 1"
                     width={860}
                     height={400}
+                    priority={false}
                 />
             </div>
 
