@@ -43,6 +43,7 @@ export async function GET() {
         })
       )
     );
+    console.log("DB:", process.env.DATABASE_URL);
 
     return NextResponse.json({
       message: "Daily inventory updated successfully",
