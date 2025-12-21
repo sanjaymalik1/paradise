@@ -1,6 +1,9 @@
 import prisma from "@/services/prisma";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
+
 // Normalize date to UTC midnight (important!)
 function getTodayUTC() {
   const now = new Date();
